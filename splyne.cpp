@@ -1,12 +1,17 @@
 #include "splyne.h"
 #include <cmath>
 #include <vector>
+#include <iostream>
 Splyne::Splyne()
 {
 }
-double Splyne::spline_s(double a, double d, double c, double b, double x, double ih)
+double Splyne::spline_s(const std::vector<double> &a, const std::vector<double> &d, const std::vector<double> &c, const std::vector<double> &b, double x, const std::vector<double> &X, int n)
 {
-    return (a + b * (x - ih) + (c / 2) * pow((x - ih), 2) + (d / 6) * pow((x - ih), 3));
+    for (int i = 1; i <= n; i++) {
+        if(x >= X[i - 1] && x <= X[i])
+            return (a[i] + b[i] * (x - X[i]) + (c[i] / 2) * pow((x - X[i]), 2) + (d[i] / 6) * pow((x - X[i]), 3));
+    }
+    return 0.0;
 }
 double Splyne::func_fi(double x)
 {
@@ -48,13 +53,21 @@ double Splyne::second_dev_fi(double x)
     }
     return res;
 }
-double Splyne::first_dev_spline_s(double d, double c, double b, double x, double ih)
+double Splyne::first_dev_spline_s(const std::vector<double> &d, const std::vector<double> &c, const std::vector<double> &b, double x, const std::vector<double> &X, int n)
 {
-    return (b + (c / 2.0) * 2.0 * (x - ih) + (d / 2.0) * pow((x - ih), 2));
+    for (int i =0; i <= n; i++) {
+        if(x >= X[i - 1] && x <= X[i])
+            return (b[i] + (c[i] / 2.0) * 2.0 * (x - X[i]) + (d[i] / 2.0) * pow((x - X[i]), 2));
+    }
+    return 0.0;
 }
-double Splyne::second_dev_spline_s(double d, double c, double x, double ih)
+double Splyne::second_dev_spline_s(const std::vector<double> &d, const std::vector<double> &c, double x, const std::vector<double> &X, int n)
 {
-    return (c + d * (x - ih));
+    for (int i = 0; i <= n; i++) {
+        if(x >= X[i - 1] && x <= X[i])
+            return (c[i] + d[i] * (x - X[i]));
+    }
+    return 0.0;
 }
 std::vector<double> Splyne::TDMASolve(double myu1, double myu2, const std::vector<double> &A, std::vector<double> &C, int n, double h, double a, double b)
 {

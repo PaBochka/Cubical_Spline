@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>453</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,32 +18,203 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>40</y>
       <width>89</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>GO</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>10</y>
       <width>113</width>
       <height>25</height>
      </rect>
     </property>
+    <property name="text">
+     <string>100</string>
+    </property>
    </widget>
-   <widget class="QCustomPlot" name="widget" native="true">
+   <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>280</x>
       <y>10</y>
-      <width>501</width>
-      <height>251</height>
+      <width>941</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <widget class="QCustomPlot" name="page"/>
+    <widget class="QCustomPlot" name="page_2"/>
+    <widget class="QCustomPlot" name="page_3"/>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Function</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>First_dev</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Second_dev</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>390</y>
+      <width>321</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>i</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>x( i - 1)</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>x( i )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>a</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>b</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>c</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>d</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>390</y>
+      <width>321</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>j</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>x( j )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>S( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F( x ) - S( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F'( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>S'( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F'( x ) - S'( x )</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>390</y>
+      <width>321</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>j</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>x( j )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F''( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>S''( x )</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>F''( x ) - S''( x )</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>256</width>
+      <height>561</height>
      </rect>
     </property>
    </widget>
@@ -53,7 +224,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>693</width>
+     <width>1280</width>
      <height>22</height>
     </rect>
    </property>

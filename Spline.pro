@@ -27,12 +27,12 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    ../qcustomplot/qcustomplot.cpp \
+    qcustomplot.cpp \
     splyne.cpp
 
 HEADERS += \
         mainwindow.h \
-    ../qcustomplot/qcustomplot.h \
+    qcustomplot.h \
     splyne.h
 
 FORMS += \
