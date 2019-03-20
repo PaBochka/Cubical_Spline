@@ -13,43 +13,95 @@ double Splyne::spline_s(const std::vector<double> &a, const std::vector<double> 
     }
     return 0.0;
 }
-double Splyne::func_fi(double x)
+double Splyne::func_fi(double x, unsigned int flag)
 {
-    double res;
-    if((x <= 0) && (x >= -1))
+    double res = 0;
+    if(flag == 0)
     {
-        res = pow(x, 3) + 3 * pow(x, 2);
+        if((x <= 0) && (x >= -1))
+        {
+            res = pow(x, 3) + 3 * pow(x, 2);
+        }
+        else
+        {
+            res = -pow(x, 3) + 3 * pow(x, 2);
+        }
     }
-    else
+    if (flag == 1)
     {
-        res = -pow(x, 3) + 3 * pow(x, 2);
+        res = pow(1.0 + pow(x, 2), 1.0 / 3.0);
+    }
+
+    if (flag == 2)
+    {
+        res = pow(1.0 + pow(x, 2), 1.0 / 3.0) + cos(10 * x);
+    }
+
+    if (flag == 3)
+    {
+        res = pow(1.0 + pow(x, 2), 1.0 / 3.0) + cos(100 * x);
     }
     return res;
 }
 
-double Splyne::first_dev_fi(double x)
+double Splyne::first_dev_fi(double x, unsigned int flag)
 {
-    double res;
-    if((x <= 0) && (x >= -1))
+    double res = 0;
+    if(flag == 0)
     {
-        res = 3 * pow(x, 2) + 6 * x;
+        if((x <= 0) && (x >= -1))
+        {
+            res = 3 * pow(x, 2) + 6 * x;
+        }
+        else
+        {
+            res = -3 * pow(x, 2) + 6 * x;
+        }
     }
-    else
+    if (flag == 1)
     {
-        res = -3 * pow(x, 2) + 6 * x;
+        res = (2.0 / 3.0) * x / (pow(1 + pow(x, 2), 2.0 / 3.0));
+    }
+
+    if (flag == 2)
+    {
+        res = (2.0 / 3.0) * x / (pow(1 + pow(x, 2), 2.0 / 3.0)) - 10 * sin(10 * x);
+    }
+
+    if (flag == 3)
+    {
+        res = (2.0 / 3.0) * x / (pow(1 + pow(x, 2), 2.0 / 3.0)) - 100 * sin(100 * x);
     }
     return res;
 }
-double Splyne::second_dev_fi(double x)
+double Splyne::second_dev_fi(double x, unsigned int flag)
 {
-    double res;
-    if((x <= 0) && (x >= -1))
+    double res = 0;
+    if(flag == 0)
     {
-        res = 6 * x + 6;
+        if((x <= 0) && (x >= -1))
+        {
+            res = 6 * x + 6;
+        }
+        else
+        {
+            res = -6 * x + 6;
+        }
     }
-    else
+
+    if (flag == 1)
     {
-        res = -6 * x + 6;
+        res = (-2 * pow(x, 2) + 6) / (9 * pow((1 + pow(x, 2)), 5.0 / 3.0));
+    }
+
+    if (flag == 2)
+    {
+        res = 2 * (-4 * pow(x, 2) / (9 * pow((pow(x, 2) + 1), 5.0 / 3.0)) - 50 * cos(10 * x) + (1.0 / 3.0) * x / (pow(1 + pow(x, 2), 2.0 / 3.0)));
+    }
+
+    if (flag == 3)
+    {
+        res = 2 * (-4 * pow(x, 2) / (9 * pow((pow(x, 2) + 1), 5.0 / 3.0)) - 5000 * cos(100 * x) + (1.0 / 3.0) * x / (pow(1 + pow(x, 2), 2.0 / 3.0)));
     }
     return res;
 }

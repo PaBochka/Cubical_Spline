@@ -31,8 +31,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    unsigned int flag = 0;
+    flag = static_cast<unsigned int>(ui->comboBox_2->currentIndex());
     Splyne *splyne = new Splyne();
-    int n, a, b;
+    int n;
+    int a, b;
     int N;
     double MaxFuncError = 0;
     double xMaxFuncError = 0;
@@ -42,12 +45,22 @@ void MainWindow::on_pushButton_clicked()
     double MaxDev2Error = 0;
     QString str = ui->lineEdit->text();
     n = str.split(" ")[0].toInt();
-    a = -1;
-    b = 1;
+    if (flag ==0)
+    {
+        a = -1;
+        b = 1;
+    }
+    else
+    {
+        a = 0;
+        b = 1;
+    }
     double h = double(b - a) / double(n);
     double myu1, myu2;
-    myu1 = splyne->second_dev_fi(-1);
-    myu2 = splyne->second_dev_fi(1);
+    myu1 = ui->lineEdit_2->text().split(" ")[0].toDouble();
+    myu2 = ui->lineEdit_3->text().split(" ")[0].toDouble();
+//   myu1 = splyne->second_dev_fi(-1, flag);
+//    myu2 = splyne->second_dev_fi(1, flag);
     std::vector<double> A(n + 1);
     std::vector<double> B(n + 1);
     std::vector<double> C(n + 1);
@@ -56,7 +69,7 @@ void MainWindow::on_pushButton_clicked()
     for (int i = 0; i <= n; i++)
     {
         X[i] = a + i * h;
-        A[i] = splyne->func_fi(X[i]);
+        A[i] = splyne->func_fi(X[i], flag);
     }
     C = splyne->TDMASolve(myu1, myu2, A, C, n, h, a, b);
     for (int i = 1; i <= n; i++)
@@ -80,15 +93,15 @@ void MainWindow::on_pushButton_clicked()
     for (double val = a; val <= b; val += h)
     {
         x.push_back(val);
-        y_acc.push_back(splyne->func_fi(val));
+        y_acc.push_back(splyne->func_fi(val, flag));
         y_num.push_back(splyne->spline_s(A, D, C, B, val, X, n));
-        error.push_back(splyne->func_fi(val) - splyne->spline_s(A, D, C, B, val, X, n));
-        y_dev1_acc.push_back(splyne->first_dev_fi(val));
-        y_dev2_acc.push_back(splyne->second_dev_fi(val));
+        error.push_back(splyne->func_fi(val, flag) - splyne->spline_s(A, D, C, B, val, X, n));
+        y_dev1_acc.push_back(splyne->first_dev_fi(val, flag));
+        y_dev2_acc.push_back(splyne->second_dev_fi(val, flag));
         y_dev1_num.push_back(splyne->first_dev_spline_s(D, C, B, val, X, n));
         y_dev2_num.push_back(splyne->second_dev_spline_s(D, C, val, X, n));
-        error_dev1.push_back(splyne->first_dev_fi(val) - splyne->first_dev_spline_s(D, C, B, val, X, n));
-        error_dev2.push_back(splyne->second_dev_fi(val) - splyne->second_dev_spline_s(D, C, val, X, n));
+        error_dev1.push_back(splyne->first_dev_fi(val, flag) - splyne->first_dev_spline_s(D, C, B, val, X, n));
+        error_dev2.push_back(splyne->second_dev_fi(val, flag) - splyne->second_dev_spline_s(D, C, val, X, n));
     }
     //График функции и сплайна
     ui->page->clearGraphs();
@@ -160,9 +173,9 @@ void MainWindow::on_pushButton_clicked()
 
     for (double val = a; val < b; val += h / 4.0)
     {
-        auto tmp = splyne->func_fi(val) - splyne->spline_s(A, D, C, B, val, X, n);
-        auto tmp_dev1 = splyne->first_dev_fi(val) - splyne->first_dev_spline_s(D, C, B, val, X, n);
-        auto tmp_dev2 = splyne->second_dev_fi(val) - splyne->second_dev_spline_s(D, C, val, X, n);
+        auto tmp = splyne->func_fi(val, flag) - splyne->spline_s(A, D, C, B, val, X, n);
+        auto tmp_dev1 = splyne->first_dev_fi(val,flag) - splyne->first_dev_spline_s(D, C, B, val, X, n);
+        auto tmp_dev2 = splyne->second_dev_fi(val, flag) - splyne->second_dev_spline_s(D, C, val, X, n);
         if(MaxFuncError < tmp)
         {
             MaxFuncError = tmp;
@@ -203,12 +216,12 @@ void MainWindow::on_pushButton_clicked()
     for (int i = 0; i <= N; i++) {
         ui->tableWidget_2->setItem(i, 0, new QTableWidgetItem(QString::number(i)));
         ui->tableWidget_2->setItem(i, 1, new QTableWidgetItem(QString::number(y, 'f', 7)));
-        ui->tableWidget_2->setItem(i, 2, new QTableWidgetItem(QString::number(splyne->func_fi(y), 'f', 7)));
+        ui->tableWidget_2->setItem(i, 2, new QTableWidgetItem(QString::number(splyne->func_fi(y, flag), 'f', 7)));
         ui->tableWidget_2->setItem(i, 3, new QTableWidgetItem(QString::number(splyne->spline_s(A, D, C, B, y, X, n), 'f', 7)));
-        ui->tableWidget_2->setItem(i, 4, new QTableWidgetItem(QString::number(abs(splyne->func_fi(y) - splyne->spline_s(A, D, C, B, y, X, n)), 'f', 7)));
-        ui->tableWidget_2->setItem(i, 5, new QTableWidgetItem(QString::number(splyne->first_dev_fi(y), 'f', 7)));
+        ui->tableWidget_2->setItem(i, 4, new QTableWidgetItem(QString::number(abs(splyne->func_fi(y, flag) - splyne->spline_s(A, D, C, B, y, X, n)), 'f', 7)));
+        ui->tableWidget_2->setItem(i, 5, new QTableWidgetItem(QString::number(splyne->first_dev_fi(y, flag), 'f', 7)));
         ui->tableWidget_2->setItem(i, 6, new QTableWidgetItem(QString::number(splyne->first_dev_spline_s(D, C, B, y, X, n), 'f', 7)));
-        ui->tableWidget_2->setItem(i, 7, new QTableWidgetItem(QString::number(abs(splyne->first_dev_fi(y) - splyne->first_dev_spline_s(D, C, B, y, X, n)), 'f', 7)));
+        ui->tableWidget_2->setItem(i, 7, new QTableWidgetItem(QString::number(abs(splyne->first_dev_fi(y, flag) - splyne->first_dev_spline_s(D, C, B, y, X, n)), 'f', 7)));
         y += h / 4.0;
         y = round(y*100000)/100000;
 
@@ -217,10 +230,10 @@ void MainWindow::on_pushButton_clicked()
     y = a;
     for (int i = 0; i <= N; i++) {
         ui->tableWidget_3->setItem(i, 0, new QTableWidgetItem(QString::number(i)));
-        ui->tableWidget_3->setItem(i, 1, new QTableWidgetItem(QString::number(y, 'f', 7)));
-        ui->tableWidget_3->setItem(i, 2, new QTableWidgetItem(QString::number(splyne->second_dev_fi(y), 'f', 7)));
-        ui->tableWidget_3->setItem(i, 3, new QTableWidgetItem(QString::number(splyne->second_dev_spline_s(D, C, y, X, n), 'f', 7)));
-        ui->tableWidget_3->setItem(i, 4, new QTableWidgetItem(QString::number(abs(splyne->second_dev_fi(y) - splyne->second_dev_spline_s(D, C, y, X, n)), 'f', 7)));
+        ui->tableWidget_3->setItem(i, 1, new QTableWidgetItem(QString::number(y, 'f')));
+        ui->tableWidget_3->setItem(i, 2, new QTableWidgetItem(QString::number(splyne->second_dev_fi(y, flag), 'f')));
+        ui->tableWidget_3->setItem(i, 3, new QTableWidgetItem(QString::number(splyne->second_dev_spline_s(D, C, y, X, n), 'f')));
+        ui->tableWidget_3->setItem(i, 4, new QTableWidgetItem(QString::number(abs(splyne->second_dev_fi(y, flag) - splyne->second_dev_spline_s(D, C, y, X, n)), 'f')));
         y += h / 4.0;
         y = round(y*100000)/100000;
     }
@@ -231,7 +244,32 @@ void MainWindow::on_pushButton_clicked()
                              QString::number(xMaxDev1Error, 'f', 4) + " \n max|F''(x) - S''(x)| = "
                              + QString::number(MaxDev2Error, 'f', 16) + " при x = " +
                              QString::number(xMaxDev2Error, 'f', 4)+ ".");
+    delete splyne;
 
 };
 
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    Splyne *splyne = new Splyne();
+    unsigned int flag = static_cast<unsigned int>(ui->comboBox_2->currentIndex());
+    int a, b;
+    if(flag == 0)
+    {
+        a = -1;
+        b = 1;
+    }
+    else
+    {
+        a = 0;
+        b = 1;
+    }
+
+    auto myu1 = splyne->second_dev_fi(a, flag);
+    auto myu2 = splyne->second_dev_fi(b, flag);
+
+    ui->lineEdit_2->setText(QString::number(myu1));
+    ui->lineEdit_3->setText(QString::number(myu2));
+    delete splyne;
+}
