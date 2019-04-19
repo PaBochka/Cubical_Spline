@@ -13,14 +13,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->page->setInteraction(QCP::iRangeDrag, true);
     ui->page->axisRect()->setRangeZoom(Qt::Vertical);
     ui->page->axisRect()->setRangeDrag(Qt::Horizontal);
+    ui->page->axisRect()->setRangeDrag(Qt::Vertical);
     ui->page_2->setInteraction(QCP::iRangeZoom, true);
     ui->page_2->setInteraction(QCP::iRangeDrag, true);
     ui->page_2->axisRect()->setRangeZoom(Qt::Vertical);
     ui->page_2->axisRect()->setRangeDrag(Qt::Vertical);
+    ui->page_2->axisRect()->setRangeDrag(Qt::Horizontal);
+
     ui->page_3->setInteraction(QCP::iRangeZoom, true);
     ui->page_3->setInteraction(QCP::iRangeDrag, true);
     ui->page_3->axisRect()->setRangeZoom(Qt::Vertical);
     ui->page_3->axisRect()->setRangeDrag(Qt::Vertical);
+    ui->page_3->axisRect()->setRangeDrag(Qt::Horizontal);
+
     connect(ui->comboBox, SIGNAL(activated(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 }
 
@@ -60,7 +65,7 @@ void MainWindow::on_pushButton_clicked()
     myu1 = ui->lineEdit_2->text().split(" ")[0].toDouble();
     myu2 = ui->lineEdit_3->text().split(" ")[0].toDouble();
 //   myu1 = splyne->second_dev_fi(-1, flag);
-//    myu2 = splyne->second_dev_fi(1, flag);
+//   myu2 = splyne->second_dev_fi(1, flag);
     std::vector<double> A(n + 1);
     std::vector<double> B(n + 1);
     std::vector<double> C(n + 1);
@@ -78,19 +83,19 @@ void MainWindow::on_pushButton_clicked()
         D[i] = (C[i] - C[i - 1]) / h;
     }
 
-    QVector<double> y_acc(n + 1);
+    QVector<double> y_acc;
     //y_acc = QVector<double>::fromStdVector(A);
-    QVector<double> x(n + 1);
+    QVector<double> x;
     //x = QVector<double>::fromStdVector(X);
-    QVector<double> y_num(n + 1);
-    QVector<double> error(n + 1);
-    QVector<double> y_dev1_acc(n + 1);
-    QVector<double> y_dev1_num(n + 1);
-    QVector<double> error_dev1(n + 1);
-    QVector<double> y_dev2_acc(n + 1);
-    QVector<double> y_dev2_num(n + 1);
-    QVector<double> error_dev2(n + 1);
-    for (double val = a; val <= b; val += h)
+    QVector<double> y_num;
+    QVector<double> error;
+    QVector<double> y_dev1_acc;
+    QVector<double> y_dev1_num;
+    QVector<double> error_dev1;
+    QVector<double> y_dev2_acc;
+    QVector<double> y_dev2_num;
+    QVector<double> error_dev2;
+    for (double val = a; val < b; val += h)
     {
         x.push_back(val);
         y_acc.push_back(splyne->func_fi(val, flag));
@@ -103,6 +108,16 @@ void MainWindow::on_pushButton_clicked()
         error_dev1.push_back(splyne->first_dev_fi(val, flag) - splyne->first_dev_spline_s(D, C, B, val, X, n));
         error_dev2.push_back(splyne->second_dev_fi(val, flag) - splyne->second_dev_spline_s(D, C, val, X, n));
     }
+    x.push_back(b);
+    y_acc.push_back(splyne->func_fi(b, flag));
+    y_num.push_back(splyne->spline_s(A, D, C, B, b, X, n));
+    error.push_back(splyne->func_fi(b, flag) - splyne->spline_s(A, D, C, B, b, X, n));
+    y_dev1_acc.push_back(splyne->first_dev_fi(b, flag));
+    y_dev2_acc.push_back(splyne->second_dev_fi(b, flag));
+    y_dev1_num.push_back(splyne->first_dev_spline_s(D, C, B, b, X, n));
+    y_dev2_num.push_back(splyne->second_dev_spline_s(D, C, b, X, n));
+    error_dev1.push_back(splyne->first_dev_fi(b, flag) - splyne->first_dev_spline_s(D, C, B, b, X, n));
+    error_dev2.push_back(splyne->second_dev_fi(b, flag) - splyne->second_dev_spline_s(D, C, b, X, n));
     //График функции и сплайна
     ui->page->clearGraphs();
     ui->page->addGraph();
@@ -222,7 +237,7 @@ void MainWindow::on_pushButton_clicked()
         ui->tableWidget_2->setItem(i, 5, new QTableWidgetItem(QString::number(splyne->first_dev_fi(y, flag), 'f', 7)));
         ui->tableWidget_2->setItem(i, 6, new QTableWidgetItem(QString::number(splyne->first_dev_spline_s(D, C, B, y, X, n), 'f', 7)));
         ui->tableWidget_2->setItem(i, 7, new QTableWidgetItem(QString::number(abs(splyne->first_dev_fi(y, flag) - splyne->first_dev_spline_s(D, C, B, y, X, n)), 'f', 7)));
-        y += h / 4.0;
+        y += h / 4;
         y = round(y*100000)/100000;
 
     }
@@ -234,7 +249,7 @@ void MainWindow::on_pushButton_clicked()
         ui->tableWidget_3->setItem(i, 2, new QTableWidgetItem(QString::number(splyne->second_dev_fi(y, flag), 'f')));
         ui->tableWidget_3->setItem(i, 3, new QTableWidgetItem(QString::number(splyne->second_dev_spline_s(D, C, y, X, n), 'f')));
         ui->tableWidget_3->setItem(i, 4, new QTableWidgetItem(QString::number(abs(splyne->second_dev_fi(y, flag) - splyne->second_dev_spline_s(D, C, y, X, n)), 'f')));
-        y += h / 4.0;
+        y += h / 4;
         y = round(y*100000)/100000;
     }
     ui->textBrowser->setText(" Cетка сплайна: n = " + QString::number(n) + " \n Контрольная сетка N = " + QString::number(N)
